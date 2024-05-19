@@ -1,0 +1,49 @@
+PROGRAM Homework
+  IMPLICIT NONE
+  REAL :: num1, num2, result
+  CHARACTER :: op
+  INTEGER :: iostat
+
+  
+  OPEN(UNIT=11, FILE='Hwdata.txt', STATUS='OLD', IOSTAT=iostat)
+  IF (iostat /= 0) THEN
+     PRINT *, "Error opening file"
+     STOP
+  END IF
+
+  
+  DO
+     READ(11, '(F5.1, F5.1, A1)', IOSTAT=iostat) num1, num2, op
+     IF (iostat /= 0) EXIT
+     CALL calculate(num1, num2, op, result)
+     PRINT *, num1, op, num2, '=', result
+  END DO
+
+  CLOSE(11)
+END PROGRAM Homework
+
+SUBROUTINE calculate(a, b, op, result)
+  IMPLICIT NONE
+  REAL, INTENT(IN) :: a, b
+  CHARACTER, INTENT(IN) :: op
+  REAL, INTENT(OUT) :: result
+
+  SELECT CASE (op)
+     CASE ('+')
+        result = a + b
+     CASE ('-')
+        result = a - b
+     CASE ('*')
+        result = a * b
+     CASE ('/')
+        IF (b /= 0.0) THEN
+           result = a / b
+        ELSE
+           PRINT *, "Error: Division by zero"
+           result = 0.0
+        END IF
+     CASE DEFAULT
+        PRINT *, "Error: Unknown operation"
+        result = 0.0
+  END SELECT
+END SUBROUTINE calculate
